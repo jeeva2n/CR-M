@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
             ];
         }
     }
-    
+        
     // Process manually added products
     $manualName = sanitize_input($_POST['manual_product_name']);
     if (!empty($manualName)) {
