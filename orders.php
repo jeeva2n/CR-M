@@ -123,12 +123,12 @@ if ($showToast) {
         <label for="manual_product_quantity">Quantity:</label>
         <input type="number" id="manual_product_quantity" name="manual_product_quantity" min="1" value="1" style="width: 100px;">
     </fieldset>
-    <button type="submit" name="create_order">Create Order</button>
+  <br>  <button type="submit" name="create_order">Create Order</button>
 </form>
 <hr class="no-print">
 <div id="printable-area">
     <div class="table-header">
-        <h2>Recent Orders</h2>
+        <h2>Order List</h2>
         <button onclick="window.print()" class="no-print">Print Orders</button>
     </div>
     <table>
