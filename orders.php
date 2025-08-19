@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     exit;
 }
 
-// --- Handle form submission for creating a new order ---
+// --- Handle form submission for creating a new orders ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
     $customerId = sanitize_input($_POST['customer_id']);
     $poDate = sanitize_input($_POST['po_date']);
