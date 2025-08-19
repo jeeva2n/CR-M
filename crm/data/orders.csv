@@ -1,5 +1,0 @@
-order_id,customer_id,po_date,delivery_date,due_date,items_json
-
-ORD1754893386,CUST1754478834,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""4"",""Name"":""PHASED ARRAY UT NAVSHIPS TEST BLOCK"",""Dimensions"":""L X W X T (300mm X 30mm X 75mm)"",""quantity"":2}]"
-ORD1754893438,CUST1754458637,2025-08-15,2025-08-16,2025-08-17,"[{""S.No"":""MANUAL-1754893438"",""Name"":""sample1"",""Dimensions"":""123 x 233x 909"",""quantity"":8}]"
-`
