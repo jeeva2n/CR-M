@@ -1,4 +1,2 @@
-order_id,customer_id,po_date,delivery_date,due_date,items_json
-
-ORD53740,CUST43827,2025-08-16,2025-08-23,2025-08-28,"[{""S.No"":""32"",""Name"":""IIW-TYPE 1 CALIBRATION TEST BLOCK INCH VERSION"",""Dimensions"":""L X W X T (12.0\" X 4.0\" X 1.0\")"",""quantity"":4}]"
-ORD60871,CUST43827,2025-08-13,2025-08-21,2025-08-20,"[{""S.No"":""2"",""Name"":""ASTM E2491 PAUT ASSESSMENT BLOCK"",""Dimensions"":""L X W X T (150mm X 100mm X 25mm)"",""quantity"":3},{""S.No"":""MANUAL-1755494480"",""Name"":""sample1"",""Dimensions"":""123 x 233x 909"",""quantity"":2}]"
+order_id,customer_id,po_date,delivery_date,due_date,items_json,status
+ORD1755579098,CUST65209,2025-08-14,2025-08-15,2025-09-04,"[{""S.No"":""32"",""Name"":""IIW-TYPE 1 CALIBRATION TEST BLOCK INCH VERSION"",""Dimensions"":""L X W X T (12.0\" X 4.0\" X 1.0\")"",""quantity"":3},{""S.No"":""MANUAL-1755579098"",""Name"":""sample1"",""Dimensions"":""123 x 233x 909"",""quantity"":1}]",Completed

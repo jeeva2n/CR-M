@@ -1,7 +1,5 @@
 <?php
 define('DATA_PATH', __DIR__ . '/data/');
-define('CURRENCY_SYMBOL', '₹');
-define('CURRENCY_CODE', 'INR');
 
 /**
  * Reads data from a CSV file and returns it as an array of associative arrays.
@@ -18,6 +16,7 @@ function getCsvData(string $filename): array {
         if ($header === FALSE) return [];
 
         while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            // --- FIX: Only combine if the column count matches the header count ---
             if (count($header) == count($row)) {
                 $data[] = array_combine($header, $row);
             }
@@ -45,15 +44,58 @@ function sanitize_input(string $data): string {
 }
 
 /**
- * Formats currency with Indian Rupee symbol
+ * Updates a specific row in a CSV file.
  */
-function formatCurrency(float $amount): string {
-    return CURRENCY_SYMBOL . number_format($amount, 2);
-}
+function updateCsvRow(string $filename, string $id, string $id_column, array $new_data): bool {
+    $filePath = DATA_PATH . $filename;
+    if (!file_exists($filePath)) {
+        return false;
+    }
 
-/**
- * Formats currency with Indian Rupee symbol and code
- */
-function formatCurrencyWithCode(float $amount): string {
-    return CURRENCY_SYMBOL . number_format($amount, 2) . ' ' . CURRENCY_CODE;
+    $data = [];
+    $header = [];
+    $updated = false;
+
+    // Read the entire file into memory
+    if (($handle = fopen($filePath, 'r')) !== FALSE) {
+        $header = fgetcsv($handle);
+        if ($header === FALSE) return false; // Added safety check
+
+        while (($row = fgetcsv($handle)) !== FALSE) {
+            // --- FIX: The same fix is applied here for robustness ---
+            if (count($header) == count($row)) {
+                $data[] = array_combine($header, $row);
+            }
+        }
+        fclose($handle);
+    } else {
+        return false;
+    }
+
+    // Find the row and update it
+    foreach ($data as &$row) {
+        if (isset($row[$id_column]) && $row[$id_column] === $id) {
+            foreach ($new_data as $key => $value) {
+                if (isset($row[$key])) {
+                    $row[$key] = $value;
+                }
+            }
+            $updated = true;
+            break;
+        }
+    }
+
+    // If a row was updated, write everything back to the file
+    if ($updated) {
+        if (($handle = fopen($filePath, 'w')) !== FALSE) {
+            fputcsv($handle, $header);
+            foreach ($data as $row) {
+                fputcsv($handle, array_values($row));
+            }
+            fclose($handle);
+            return true;
+        }
+    }
+    
+    return false;
 }

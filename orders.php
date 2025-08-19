@@ -1,10 +1,25 @@
 <?php
-// --- CHANGE: Make sure session is started at the very top ---
+// Start session at the very top for notifications
 session_start();
 
 require_once 'functions.php';
 
-// Handle form submission
+// --- Handle Status Updates ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
+    $orderId = sanitize_input($_POST['order_id']);
+    $newStatus = sanitize_input($_POST['new_status']);
+
+    if (!empty($orderId) && in_array($newStatus, ['Pending', 'On Going', 'Completed'])) {
+        updateCsvRow('orders.csv', $orderId, 'order_id', ['status' => $newStatus]);
+        $_SESSION['message'] = ['type' => 'success', 'text' => "Order #$orderId status updated to $newStatus."];
+    } else {
+        $_SESSION['message'] = ['type' => 'error', 'text' => 'Invalid update request.'];
+    }
+    header('Location: orders.php');
+    exit;
+}
+
+// --- Handle form submission for creating a new order ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
     $customerId = sanitize_input($_POST['customer_id']);
     $poDate = sanitize_input($_POST['po_date']);
@@ -30,8 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
             ];
         }
     }
-        
-    // Process manually added products
+    
+    // Process manually added product
     $manualName = sanitize_input($_POST['manual_product_name']);
     if (!empty($manualName)) {
         $manualDimensions = sanitize_input($_POST['manual_product_dimensions']);
@@ -48,16 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
 
     if (!empty($customerId) && !empty($orderItems) && !empty($poDate)) {
         $newOrder = [
-           'order_id' => 'ORD' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT),
+            'order_id' => 'ORD' . time(),
             'customer_id' => $customerId,
             'po_date' => $poDate,
             'delivery_date' => $deliveryDate,
             'due_date' => $dueDate,
             'items_json' => json_encode($orderItems),
+            'status' => 'Pending' // Default status for new orders
         ];
         appendCsvData('orders.csv', $newOrder);
 
-        // --- FEATURE: Set the session variable for the success notification ---
+        // Set session variable for the success notification
         $_SESSION['order_created'] = true;
 
         header('Location: orders.php');
@@ -65,13 +81,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
     }
 }
 
-// --- FEATURE: Check if the notification should be shown ---
+// Check if the toast notification should be shown
 $showToast = false;
 if (isset($_SESSION['order_created']) && $_SESSION['order_created']) {
     $showToast = true;
     unset($_SESSION['order_created']); // Clear it so it doesn't show again
 }
 
+// Check for status update messages
+$message = '';
+if (isset($_SESSION['message'])) {
+    $message_type = $_SESSION['message']['type'] === 'success' ? 'color: green; background-color: #eaf7ea;' : 'color: red; background-color: #fdeaea;';
+    $message = "<div class='no-print' style='padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid; {$message_type}'>" . htmlspecialchars($_SESSION['message']['text']) . "</div>";
+    unset($_SESSION['message']);
+}
+
+// Get data for display
 $orders = getCsvData('orders.csv');
 $customers = getCsvData('customers.csv');
 $products = getCsvData('products.csv');
@@ -79,15 +104,15 @@ $customerMap = array_column($customers, 'name', 'id');
 
 include 'includes/header.php';
 
-// --- FEATURE: Print the toast notification div if needed ---
+// Print the toast notification div if needed
 if ($showToast) {
     echo '<div id="toast-notification">Order Created Successfully!</div>';
 }
 ?>
 
 <h1>Order Management</h1>
-<!-- The rest of the HTML in this file remains exactly the same as the previous step -->
-<!-- (The form, the hr, the printable area, the table, etc.) -->
+
+<?= $message ?> <!-- Display status update messages -->
 
 <form action="orders.php" method="post" class="no-print">
     <label for="customer_id">Select Customer:</label>
@@ -102,6 +127,7 @@ if ($showToast) {
         <div style="flex: 1;"><label for="delivery_date">Expected Delivery Date:</label><input type="date" id="delivery_date" name="delivery_date"></div>
         <div style="flex: 1;"><label for="due_date">Payment Due Date:</label><input type="date" id="due_date" name="due_date"></div>
     </div>
+    
     <fieldset>
         <legend>Select an Existing Product</legend>
         <label for="product_sno">Product:</label>
@@ -114,6 +140,7 @@ if ($showToast) {
         <label for="quantity">Quantity:</label>
         <input type="number" name="quantity[]" min="1" value="1" style="width: 100px;">
     </fieldset>
+
     <fieldset>
         <legend>Or Add a Manual Product</legend>
         <label for="manual_product_name">Product Name:</label>
@@ -123,45 +150,74 @@ if ($showToast) {
         <label for="manual_product_quantity">Quantity:</label>
         <input type="number" id="manual_product_quantity" name="manual_product_quantity" min="1" value="1" style="width: 100px;">
     </fieldset>
-  <br>  <button type="submit" name="create_order">Create Order</button>
+
+    <button type="submit" name="create_order">Create Order</button>
 </form>
+
 <hr class="no-print">
+
 <div id="printable-area">
     <div class="table-header">
-        <h2>Order List</h2>
+        <h2>Recent Orders</h2>
         <button onclick="window.print()" class="no-print">Print Orders</button>
     </div>
     <table>
         <thead>
-            <tr><th>Order ID</th><th>Customer</th><th>PO Date</th><th>Delivery Date</th><th>Due Date</th><th>Items</th></tr>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>PO Date</th>
+                <th>Items</th>
+                <th>Status</th>
+            </tr>
         </thead>
         <tbody>
             <?php if (empty($orders)): ?>
-                <tr><td colspan="6">No orders found.</td></tr>
+                <tr><td colspan="5">No orders found.</td></tr>
             <?php else: ?>
                 <?php foreach (array_reverse($orders) as $order): ?>
                 <tr>
                     <td><?= htmlspecialchars($order['order_id']) ?></td>
                     <td><?= htmlspecialchars($customerMap[$order['customer_id']] ?? 'N/A') ?></td>
                     <td><?= htmlspecialchars($order['po_date']) ?></td>
-                    <td><?= htmlspecialchars($order['delivery_date']) ?></td>
-                    <td><?= htmlspecialchars($order['due_date']) ?></td>
                     <td>
                         <div class="order-items">
                             <?php 
                             $items = json_decode($order['items_json'], true);
-                            if (is_array($items)): foreach ($items as $item):
+                            if (is_array($items)):
+                                foreach ($items as $item):
                             ?>
                                 <div class="item">
                                     <strong><?= htmlspecialchars($item['Name']) ?> (x<?= htmlspecialchars($item['quantity']) ?>)</strong>
                                     <p style="font-size: 0.9em; color: #555; margin: 0;"><?= htmlspecialchars($item['Dimensions']) ?></p>
                                 </div>
-                            <?php endforeach; endif; ?>
+                            <?php 
+                                endforeach;
+                            endif;
+                            ?>
                         </div>
                     </td>
+                    <td>
+                        <?php
+                            $status = $order['status'] ?? 'Pending';
+                            $status_class = 'status-' . strtolower(str_replace(' ', '-', $status));
+                        ?>
+                        <span class="status-badge <?= $status_class ?>"><?= htmlspecialchars($status) ?></span>
+                        <form action="orders.php" method="post" class="status-form no-print">
+                            <input type="hidden" name="order_id" value="<?= htmlspecialchars($order['order_id']) ?>">
+                            <select name="new_status">
+                                <option value="Pending" <?= $status == 'Pending' ? 'selected' : '' ?>>Pending</option>
+                                <option value="On Going" <?= $status == 'On Going' ? 'selected' : '' ?>>On Going</option>
+                                <option value="Completed" <?= $status == 'Completed' ? 'selected' : '' ?>>Completed</option>
+                            </select>
+                            <button type="submit" name="update_status">Update</button>
+                        </form>
+                    </td>
                 </tr>
-                <?php endforeach; endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
+
 <?php include 'includes/footer.php'; ?>

@@ -152,44 +152,19 @@ button:hover {
     transform: translateY(-2px);
 }
 
-/* Dashboard Metrics */
-.dashboard-metrics {
-    display: flex;
+/* --- Dashboard Metrics --- */
+.dashboard-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Creates a 3-column grid */
     gap: 20px;
-    justify-content: space-around;
     text-align: center;
-    flex-wrap: wrap;
 }
 
 .metric-card {
-    flex: 1;
     background-color: #ecf0f1;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: fadeSlideIn 0.8s ease;
 }
-
-.metric-card:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-
-@keyframes fadeSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.metric-card:nth-child(1) { animation-delay: 0.2s; }
-.metric-card:nth-child(2) { animation-delay: 0.4s; }
-.metric-card:nth-child(3) { animation-delay: 0.6s; }
 
 .metric-card h2 {
     margin-top: 0;
@@ -311,3 +286,35 @@ footer {
     top: 20px; /* Final position on-screen */
     opacity: 1;
 }
+/* --- Status Badge and Form Styles --- */
+.status-badge {
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    display: inline-block;
+    text-align: center;
+}
+
+.status-pending { background-color: #ecf0f1; } /* Orange */
+.status-on-going { background-color: #ecf0f1; } /* Blue */
+.status-completed { background-color: #ecf0f1; } /* Green */
+
+.status-form {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.status-form select {
+    padding: 5px;
+    margin-bottom: 0;
+    width: 120px; /* Adjust width as needed */
+}
+
+.status-form button {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
