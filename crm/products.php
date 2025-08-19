@@ -63,7 +63,7 @@ include 'includes/header.php';
         <label for="product_csv">Select CSV File:</label>
         <input type="file" id="product_csv" name="product_csv" accept=".csv" required>
         
-        <button type="submit" name="upload_products" style="margin-top: 10px;">Upload and Replace Products</button>
+        <button type="submit" style="border-radius: 55px;" name="upload_products" style="margin-top: 10px;">Upload and Replace Products</button>
     </fieldset>
 </form>
 

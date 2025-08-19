@@ -34,7 +34,7 @@ include 'includes/header.php';
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
     
-    <button type="submit" name="add_customer">Add Customer</button>
+    <button type="submit" style="border-radius: 55px;" name="add_customer">Add Customer</button>
 </form>
 <hr>
 

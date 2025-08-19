@@ -151,7 +151,7 @@ if ($showToast) {
         <input type="number" id="manual_product_quantity" name="manual_product_quantity" min="1" value="1" style="width: 100px;">
     </fieldset>
 
-    <button type="submit" name="create_order">Create Order</button>
+   <br> <button type="submit" style="border-radius: 55px;" name="create_order">Create Order</button>
 </form>
 
 <hr class="no-print">
@@ -159,7 +159,7 @@ if ($showToast) {
 <div id="printable-area">
     <div class="table-header">
         <h2>Recent Orders</h2>
-        <button onclick="window.print()" class="no-print">Print Orders</button>
+        <button onclick="window.print()" style="border-radius: 55px;" class="no-print">Print Orders</button>
     </div>
     <table>
         <thead>
@@ -210,7 +210,7 @@ if ($showToast) {
                                 <option value="On Going" <?= $status == 'On Going' ? 'selected' : '' ?>>On Going</option>
                                 <option value="Completed" <?= $status == 'Completed' ? 'selected' : '' ?>>Completed</option>
                             </select>
-                            <button type="submit" name="update_status">Update</button>
+                            <button style="border-radius: 55px;" type="submit" name="update_status">Update</button>
                         </form>
                     </td>
                 </tr>
