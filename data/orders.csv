@@ -2,3 +2,7 @@ order_id,customer_id,po_date,delivery_date,due_date,items_json,status
 ORD1755671875,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Pending
 ORD1755671903,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Pending
 ORD1755671987,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Completed
+37727,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]","On Going"
+ORD3199,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Completed
+ORD2725,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]","On Going"
+ORD5972,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""14"",""Name"":""NON-PIPING CALIBRATION BLOCK 75MM THICKNESS"",""Dimensions"":""L X W X T (400mm X 300mm X 75mm)"",""quantity"":1}]","On Going"

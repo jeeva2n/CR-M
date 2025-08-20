@@ -19,6 +19,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     exit;
 }
 
+/**
+ * Generate unique ID in the format: 3 letters + 4 digits (e.g., ORD1234).
+ * - If $columnName exists as a column in $file, ensure uniqueness against that column.
+ * - If $columnName == 'S.No' but not a real column (items stored in items_json), it scans items_json across rows.
+ * - $prefix lets you fix the 3-letter part (e.g., 'ORD', 'MAN'); if shorter/empty, random letters fill in.
+ */
+if (!function_exists('generateUniqueId')) {
+    function generateUniqueId($file, $columnName, $prefix = '') {
+        $existingIds = [];
+
+        if (file_exists($file) && ($handle = fopen($file, "r")) !== false) {
+            $headers = fgetcsv($handle);
+            $idIndex = $headers ? array_search($columnName, $headers) : false;
+
+            if ($idIndex !== false) {
+                // Column exists: collect values from that column.
+                while (($row = fgetcsv($handle)) !== false) {
+                    if (isset($row[$idIndex]) && $row[$idIndex] !== '') {
+                        $existingIds[] = $row[$idIndex];
+                    }
+                }
+            } else {
+                // Special case: S.No values live inside items_json
+                if ($columnName === 'S.No' && $headers) {
+                    $itemsIdx = array_search('items_json', $headers);
+                    if ($itemsIdx !== false) {
+                        while (($row = fgetcsv($handle)) !== false) {
+                            $items = json_decode($row[$itemsIdx] ?? '', true);
+                            if (is_array($items)) {
+                                foreach ($items as $it) {
+                                    if (isset($it['S.No'])) {
+                                        $existingIds[] = $it['S.No'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            fclose($handle);
+        }
+
+        // Generate until unique
+        do {
+            // Clean + normalize prefix; if missing/short, fill with random letters to reach 3
+            $letters = strtoupper(substr(preg_replace('/[^A-Z]/i', '', $prefix), 0, 3));
+            $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            while (strlen($letters) < 3) {
+                $letters .= $alphabet[random_int(0, 25)];
+            }
+
+            $numbers = str_pad((string)random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+            $uniqueId = $letters . $numbers;
+        } while (in_array($uniqueId, $existingIds, true));
+
+        return $uniqueId;
+    }
+}
+
 // --- Handle form submission for creating a new order ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
     $customerId = sanitize_input($_POST['customer_id']);
@@ -53,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
         $manualQty = (int)($_POST['manual_product_quantity']);
         if ($manualQty > 0) {
             $orderItems[] = [
-                'S.No' => 'MANUAL-' . time(),
+                'S.No' => generateUniqueId('orders.csv', 'S.No', 'MAN'),
                 'Name' => $manualName,
                 'Dimensions' => $manualDimensions,
                 'quantity' => $manualQty
@@ -61,9 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
         }
     }
 
+    // Save order if valid
     if (!empty($customerId) && !empty($orderItems) && !empty($poDate)) {
         $newOrder = [
-            'order_id' => 'ORD' . time(),
+            'order_id' => generateUniqueId('orders.csv', 'order_id', 'ORD'),
             'customer_id' => $customerId,
             'po_date' => $poDate,
             'delivery_date' => $deliveryDate,
