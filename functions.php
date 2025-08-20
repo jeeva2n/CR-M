@@ -1,22 +1,39 @@
 <?php
 define('DATA_PATH', __DIR__ . '/data/');
 
+// --- NEW FUNCTION: To generate a unique, incremental 5-digit Order ID ---
+function generateNewOrderId(): int {
+    $orders = getCsvData('orders.csv');
+    
+    // If there are no orders yet, start with the first 5-digit number.
+    if (empty($orders)) {
+        return 10000;
+    }
+    
+    // Get all existing order IDs
+    $all_ids = array_column($orders, 'order_id');
+    
+    // Find the highest ID and add 1 to it
+    $new_id = max($all_ids) + 1;
+    
+    return $new_id;
+}
+// --- END NEW FUNCTION ---
+
+
 /**
  * Reads data from a CSV file and returns it as an array of associative arrays.
  */
 function getCsvData(string $filename): array {
     $filePath = DATA_PATH . $filename;
-    if (!file_exists($filePath)) {
-        return [];
-    }
+    if (!file_exists($filePath)) { return []; }
 
     $data = [];
     if (($handle = fopen($filePath, 'r')) !== FALSE) {
-        $header = fgetcsv($handle, 1000, ",");
+        $header = fgetcsv($handle);
         if ($header === FALSE) return [];
 
-        while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            // --- FIX: Only combine if the column count matches the header count ---
+        while (($row = fgetcsv($handle)) !== FALSE) {
             if (count($header) == count($row)) {
                 $data[] = array_combine($header, $row);
             }
@@ -48,36 +65,29 @@ function sanitize_input(string $data): string {
  */
 function updateCsvRow(string $filename, string $id, string $id_column, array $new_data): bool {
     $filePath = DATA_PATH . $filename;
-    if (!file_exists($filePath)) {
-        return false;
-    }
+    if (!file_exists($filePath)) { return false; }
 
     $data = [];
     $header = [];
     $updated = false;
 
-    // Read the entire file into memory
     if (($handle = fopen($filePath, 'r')) !== FALSE) {
         $header = fgetcsv($handle);
-        if ($header === FALSE) return false; // Added safety check
+        if ($header === FALSE) return false;
 
         while (($row = fgetcsv($handle)) !== FALSE) {
-            // --- FIX: The same fix is applied here for robustness ---
             if (count($header) == count($row)) {
                 $data[] = array_combine($header, $row);
             }
         }
         fclose($handle);
-    } else {
-        return false;
-    }
+    } else { return false; }
 
-    // Find the row and update it
-    foreach ($data as &$row) {
-        if (isset($row[$id_column]) && $row[$id_column] === $id) {
+    foreach ($data as &$row_ref) { // Use a different variable name for reference
+        if (isset($row_ref[$id_column]) && $row_ref[$id_column] === $id) {
             foreach ($new_data as $key => $value) {
-                if (isset($row[$key])) {
-                    $row[$key] = $value;
+                if (isset($row_ref[$key])) {
+                    $row_ref[$key] = $value;
                 }
             }
             $updated = true;
@@ -85,12 +95,11 @@ function updateCsvRow(string $filename, string $id, string $id_column, array $ne
         }
     }
 
-    // If a row was updated, write everything back to the file
     if ($updated) {
         if (($handle = fopen($filePath, 'w')) !== FALSE) {
             fputcsv($handle, $header);
-            foreach ($data as $row) {
-                fputcsv($handle, array_values($row));
+            foreach ($data as $row_data) { // Use another variable name here
+                fputcsv($handle, array_values($row_data));
             }
             fclose($handle);
             return true;

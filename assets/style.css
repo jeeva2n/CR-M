@@ -288,7 +288,7 @@ footer {
 }
 /* --- Status Badge and Form Styles --- */
 .status-badge {
-    color: white;
+    color: rgb(16, 39, 72);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.8em;
@@ -297,9 +297,9 @@ footer {
     text-align: center;
 }
 
-.status-pending { background-color: #ecf0f1; } /* Orange */
-.status-on-going { background-color: #ecf0f1; } /* Blue */
-.status-completed { background-color: #ecf0f1; } /* Green */
+.status-pending { background-color: #eee; } /* Orange */
+.status-on-going { background-color: #eee; } /* Blue */
+.status-completed { background-color: #eee; } /* Green */
 
 .status-form {
     margin-top: 10px;

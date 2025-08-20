@@ -1,2 +1,4 @@
 order_id,customer_id,po_date,delivery_date,due_date,items_json,status
-ORD1755592076,CUST1754458637,2025-08-16,2025-08-15,2025-08-29,"[{""S.No"":""32"",""Name"":""IIW-TYPE 1 CALIBRATION TEST BLOCK INCH VERSION"",""Dimensions"":""L X W X T (12.0\" X 4.0\" X 1.0\")"",""quantity"":1}]",Completed
+ORD1755671875,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Pending
+ORD1755671903,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Pending
+ORD1755671987,CUST53236,2025-08-01,2025-08-02,2025-08-03,"[{""S.No"":""19"",""Name"":""4 STEP UT CALIBRATION BLOCK METRIC VERSION"",""Dimensions"":""L X W X T (80mm X 20mm X 2mm, 6mm,2.5mm)"",""quantity"":1}]",Completed

@@ -73,7 +73,7 @@ include 'includes/header.php';
 
 <hr>
 
-<h2>Recent Orders</h2>
+<h2>Orders List</h2>
 <!-- The recent orders table remains the same -->
 <table>
     <thead>

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     exit;
 }
 
-// --- Handle form submission for creating a new orders ---
+// --- Handle form submission for creating a new order ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
     $customerId = sanitize_input($_POST['customer_id']);
     $poDate = sanitize_input($_POST['po_date']);
@@ -69,26 +69,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_order'])) {
             'delivery_date' => $deliveryDate,
             'due_date' => $dueDate,
             'items_json' => json_encode($orderItems),
-            'status' => 'Pending' // Default status for new orders
+            'status' => 'Pending'
         ];
         appendCsvData('orders.csv', $newOrder);
-
-        // Set session variable for the success notification
         $_SESSION['order_created'] = true;
-
         header('Location: orders.php');
         exit;
     }
 }
 
-// Check if the toast notification should be shown
-$showToast = false;
-if (isset($_SESSION['order_created']) && $_SESSION['order_created']) {
-    $showToast = true;
-    unset($_SESSION['order_created']); // Clear it so it doesn't show again
+// Check for notifications
+$showToast = isset($_SESSION['order_created']) && $_SESSION['order_created'];
+if ($showToast) {
+    unset($_SESSION['order_created']);
 }
 
-// Check for status update messages
 $message = '';
 if (isset($_SESSION['message'])) {
     $message_type = $_SESSION['message']['type'] === 'success' ? 'color: green; background-color: #eaf7ea;' : 'color: red; background-color: #fdeaea;';
@@ -104,17 +99,16 @@ $customerMap = array_column($customers, 'name', 'id');
 
 include 'includes/header.php';
 
-// Print the toast notification div if needed
 if ($showToast) {
     echo '<div id="toast-notification">Order Created Successfully!</div>';
 }
 ?>
 
 <h1>Order Management</h1>
-
-<?= $message ?> <!-- Display status update messages -->
+<?= $message ?>
 
 <form action="orders.php" method="post" class="no-print">
+    <!-- ... form contents ... -->
     <label for="customer_id">Select Customer:</label>
     <select name="customer_id" id="customer_id" required>
         <option value="">-- Choose a Customer --</option>
@@ -127,7 +121,6 @@ if ($showToast) {
         <div style="flex: 1;"><label for="delivery_date">Expected Delivery Date:</label><input type="date" id="delivery_date" name="delivery_date"></div>
         <div style="flex: 1;"><label for="due_date">Payment Due Date:</label><input type="date" id="due_date" name="due_date"></div>
     </div>
-    
     <fieldset>
         <legend>Select an Existing Product</legend>
         <label for="product_sno">Product:</label>
@@ -140,7 +133,6 @@ if ($showToast) {
         <label for="quantity">Quantity:</label>
         <input type="number" name="quantity[]" min="1" value="1" style="width: 100px;">
     </fieldset>
-
     <fieldset>
         <legend>Or Add a Manual Product</legend>
         <label for="manual_product_name">Product Name:</label>
@@ -150,7 +142,6 @@ if ($showToast) {
         <label for="manual_product_quantity">Quantity:</label>
         <input type="number" id="manual_product_quantity" name="manual_product_quantity" min="1" value="1" style="width: 100px;">
     </fieldset>
-
    <br> <button type="submit" style="border-radius: 55px;" name="create_order">Create Order</button>
 </form>
 
@@ -158,7 +149,7 @@ if ($showToast) {
 
 <div id="printable-area">
     <div class="table-header">
-        <h2>Recent Orders</h2>
+        <h2>Orders List</h2>
         <button onclick="window.print()" style="border-radius: 55px;" class="no-print">Print Orders</button>
     </div>
     <table>
@@ -204,13 +195,18 @@ if ($showToast) {
                         ?>
                         <span class="status-badge <?= $status_class ?>"><?= htmlspecialchars($status) ?></span>
                         <form action="orders.php" method="post" class="status-form no-print">
+                            <!--
+                                *** BUG FIX IS HERE ***
+                                The 'value' attribute for the hidden input now correctly uses
+                                the $order['order_id'] specific to this loop iteration.
+                            -->
                             <input type="hidden" name="order_id" value="<?= htmlspecialchars($order['order_id']) ?>">
                             <select name="new_status">
                                 <option value="Pending" <?= $status == 'Pending' ? 'selected' : '' ?>>Pending</option>
                                 <option value="On Going" <?= $status == 'On Going' ? 'selected' : '' ?>>On Going</option>
                                 <option value="Completed" <?= $status == 'Completed' ? 'selected' : '' ?>>Completed</option>
                             </select>
-                            <button style="border-radius: 55px;" type="submit" name="update_status">Update</button>
+                            <button type="submit" style="border-radius: 55px;" name="update_status">Update</button>
                         </form>
                     </td>
                 </tr>

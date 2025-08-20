@@ -1,6 +1,6 @@
     </main>
     <footer>
-        <p>&copy; <?= date('Y') ?> Simple CRM</p>
+        <p>&copy; <?= date('Y') ?>  ✔</p>
     </footer>
 
     <!-- START: JavaScript for Toast Notification -->
