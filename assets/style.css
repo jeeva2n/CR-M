@@ -318,3 +318,233 @@ footer {
     font-size: 14px;
 }
 
+
+/* --- Styles for Advanced Order Form --- */
+.line-item {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+.line-item h4 {
+    margin-top: 0;
+}
+.line-item textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+/* --- Styles for Raw Material Section --- */
+.raw-materials-list {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+.raw-materials-list h5 {
+    margin: 5px 0;
+    color: #34495e;
+}
+.raw-materials-list ul {
+    padding-left: 20px;
+    margin: 5px 0;
+}
+.raw-materials-list li {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.raw-material-form {
+    background-color: #f8f9fa;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+.raw-material-form input[type="text"],
+.raw-material-form input[type="date"] {
+    display: block;
+    width: 95%; /* Adjust width to fit inside padding */
+    margin-bottom: 5px;
+    padding: 6px;
+}
+.raw-material-form button {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* --- New Status Badge Colors --- */
+.status-sourcing-material { background-color: #ecf0f1; } /* Darker Orange */
+.status-in-production { background-color: #ecf0f1; }   /* Purple */
+
+/* --- Styles for Machining Section --- */
+.machining-processes {
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+.machining-processes h5 {
+    margin: 5px 0;
+    color: #34495e;
+}
+.process-item {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.process-update-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+    align-items: center;
+}
+.process-update-form select,
+.process-update-form input {
+    padding: 4px;
+    margin-bottom: 0;
+}
+.process-update-form button {
+    padding: 4px 8px;
+    font-size: 12px;
+}
+.process-docs {
+    margin-top: 5px;
+    font-size: 0.8em;
+}
+.machining-add-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px dashed #ccc;
+    margin-top: 10px;
+}
+.machining-add-form input {
+    padding: 6px;
+    margin-bottom: 0;
+}
+.machining-add-form button {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+/* New Status Color */
+.status-ready-for-qc { background-color: #ecf0f1; } /* Teal */
+
+
+/* --- Styles for Workflow Sections --- */
+.raw-materials-list, .machining-processes {
+    margin-left: 10px;
+    margin-top: 10px;
+    border-left: 2px solid #f0f0f0;
+    padding-left: 10px;
+}
+.raw-materials-list h5, .machining-processes h5 {
+    margin: 5px 0;
+    color: #34495e;
+}
+.nested-table {
+    width: 100%;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+.nested-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+/* Base Form Styling for Nested Forms */
+.raw-material-form, .machining-add-form {
+    background-color: #f8f9fa;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.raw-material-form input, .machining-add-form input {
+    padding: 6px; margin-bottom: 0;
+}
+.raw-material-form button, .machining-add-form button {
+    padding: 6px 12px; font-size: 12px;
+}
+
+/* Machining Process Item Styling */
+.process-item {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.process-item p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+.process-update-form {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 8px; align-items: center;
+}
+.process-update-form select, .process-update-form input {
+    padding: 4px; margin-bottom: 0;
+}
+.process-update-form button {
+    padding: 4px 8px; font-size: 12px;
+}
+.process-docs {
+    margin-top: 5px; font-size: 0.8em;
+}
+
+/* Smaller status badge for nested items */
+.status-badge-small {
+    color: rgb(10, 16, 69); padding: 2px 8px; border-radius: 10px;
+    font-size: 0.7em; font-weight: bold;
+}
+
+/* New Status Badge Colors */
+.status-sourcing-material { background-color: #eee; }
+.status-in-production { background-color: #eee; }
+.status-ready-for-qc { background-color: #eee; }
+.status-not-started { background-color: #7f8c8d; }
+.status-in-progress { background-color: #3498db; }
+
+
+/* Make the table container take full page width */
+#printable-area {
+  width: 90%;
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 15px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  overflow-x: hidden; /* prevent horizontal scroll */
+}
+
+/* Table should shrink inside body */
+#printable-area table {
+  width: 100%;
+  table-layout: auto; /* auto column sizing */
+  border-collapse: collapse;
+  font-size: 14px;
+  word-wrap: break-word; /* break long text */
+}
+
+/* Table cells */
+#printable-area th,
+#printable-area td {
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  vertical-align: top;
+  text-align: left;
+  max-width: 300px; /* prevent columns from stretching too wide */
+  white-space: normal; /* wrap text instead of forcing scroll */
+}

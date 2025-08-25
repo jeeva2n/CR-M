@@ -1,37 +1,29 @@
 <?php
 require_once 'functions.php';
 
-// --- Fetch all necessary data ---
 $customers = getCsvData('customers.csv');
-$products = getCsvData('products.csv'); // We need to read this file now
+$products = getCsvData('products.csv');
 $orders = getCsvData('orders.csv');
 
-// --- Calculate ALL metrics ---
 $totalCustomers = count($customers);
 $totalProducts = count($products);
 $totalOrders = count($orders);
 
-// Calculate order status counts
-$pendingCount = 0;
-$ongoingCount = 0;
-$completedCount = 0;
+// Initialize counts for all statuses
+$statusCounts = [
+    'Pending' => 0, 'Sourcing Material' => 0, 'In Production' => 0,
+    'Ready for QC' => 0, 'Completed' => 0,
+];
+
 foreach ($orders as $order) {
     $status = $order['status'] ?? 'Pending';
-    switch ($status) {
-        case 'On Going':
-            $ongoingCount++;
-            break;
-        case 'Completed':
-            $completedCount++;
-            break;
-        case 'Pending':
-        default:
-            $pendingCount++;
-            break;
+    if (array_key_exists($status, $statusCounts)) {
+        $statusCounts[$status]++;
+    } else {
+        $statusCounts['Pending']++; // Default for any unknown status
     }
 }
 
-// Get recent orders for the table
 $recentOrders = array_slice(array_reverse($orders), 0, 5);
 $customerMap = array_column($customers, 'name', 'id');
 
@@ -40,49 +32,23 @@ include 'includes/header.php';
 
 <h1>Dashboard</h1>
 
-<!-- This is now a more comprehensive set of metric cards -->
 <div class="dashboard-metrics-grid">
-    <!-- Row 1: General Stats -->
-    <div class="metric-card">
-        <h2>Total Customers</h2>
-        <p><?= $totalCustomers ?></p>
-    </div>
-    <div class="metric-card">
-        <h2>Total Products</h2>
-        <p><?= $totalProducts ?></p>
-    </div>
-    <div class="metric-card">
-        <h2>Total Orders</h2>
-        <p><?= $totalOrders ?></p>
-    </div>
-
-    <!-- Row 2: Order Status Stats -->
-    <div class="metric-card status-pending">
-        <h2>Pending Orders</h2>
-        <p><?= $pendingCount ?></p>
-    </div>
-    <div class="metric-card status-on-going">
-        <h2>On Going Orders</h2>
-        <p><?= $ongoingCount ?></p>
-    </div>
-    <div class="metric-card status-completed">
-        <h2>Completed Orders</h2>
-        <p><?= $completedCount ?></p>
-    </div>
+    <div class="metric-card"><h2>Total Customers</h2><p><?= $totalCustomers ?></p></div>
+    <div class="metric-card"><h2>Total Products</h2><p><?= $totalProducts ?></p></div>
+    <div class="metric-card"><h2>Total Orders</h2><p><?= $totalOrders ?></p></div>
+    
+    <div class="metric-card status-pending"><h2>Pending</h2><p><?= $statusCounts['Pending'] ?></p></div>
+    <div class="metric-card status-sourcing-material"><h2>Sourcing</h2><p><?= $statusCounts['Sourcing Material'] ?></p></div>
+    <div class="metric-card status-in-production"><h2>Production</h2><p><?= $statusCounts['In Production'] ?></p></div>
+    <div class="metric-card status-ready-for-qc"><h2>Ready for QC</h2><p><?= $statusCounts['Ready for QC'] ?></p></div>
+    <div class="metric-card status-completed"><h2>Completed</h2><p><?= $statusCounts['Completed'] ?></p></div>
 </div>
 
 <hr>
-
-<h2>Orders List</h2>
-<!-- The recent orders table remains the same -->
+<h2>Recent Orders</h2>
 <table>
     <thead>
-        <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>PO Date</th>
-            <th>Status</th>
-        </tr>
+        <tr><th>Order ID</th><th>Customer</th><th>PO Date</th><th>Status</th></tr>
     </thead>
     <tbody>
         <?php if (empty($recentOrders)): ?>

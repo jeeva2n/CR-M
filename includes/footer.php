@@ -24,6 +24,5 @@
         });
     </script>
     <!-- END: JavaScript -->
-
 </body>
 </html>

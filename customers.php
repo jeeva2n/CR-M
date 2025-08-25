@@ -26,7 +26,7 @@ include 'includes/header.php';
 
 <h1>Customer Management</h1>
 
-<h2>Add New Customer</h2>
+<h2>Add New Customer</h2> 
 <form action="customers.php" method="post">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required>

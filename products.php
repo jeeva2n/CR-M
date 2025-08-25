@@ -58,6 +58,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     });
 }
 
+
 include 'includes/header.php';
 ?>
 
